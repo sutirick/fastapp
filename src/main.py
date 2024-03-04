@@ -1,14 +1,15 @@
 import fastapi_users
-from auth.database import User
-from auth.manager import get_user_manager
-from auth.schemas import UserCreate, UserRead
+from src.auth.database import User
+from src.auth.manager import get_user_manager
+from src.auth.schemas import UserCreate, UserRead
 from fastapi import Depends, FastAPI
 from pydantic import BaseModel
 from pydantic import Field
 from datetime import datetime
 from enum import Enum
 from typing import List, Optional
-from auth.auth import auth_backend
+from src.auth.auth import auth_backend
+from src.operations.router import router as router_operation
 
 app=FastAPI(title='Some App')
 
@@ -20,14 +21,16 @@ fastapi_users = fastapi_users.FastAPIUsers[User, int](
 app.include_router(
     fastapi_users.get_auth_router(auth_backend),
     prefix="/auth/jwt",
-    tags=["auth"],
+    tags=["Auth"],
 )
 
 app.include_router(
     fastapi_users.get_register_router(UserRead, UserCreate),
     prefix="/auth",
-    tags=["auth"],
+    tags=["Auth"],
 )
+
+app.include_router(router_operation)
 
 current_user = fastapi_users.current_user()
 
