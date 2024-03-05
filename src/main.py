@@ -3,6 +3,7 @@ from src.auth.manager import get_user_manager
 from src.auth.schemas import UserCreate, UserRead
 from src.auth.auth import auth_backend
 from src.operations.router import router as router_operation
+from src.tasks.router import router as router_tasks
 
 from fastapi import Depends, FastAPI
 import fastapi_users
@@ -40,6 +41,7 @@ app.include_router(
 )
 
 app.include_router(router_operation)
+app.include_router(router_tasks)
 
 current_user = fastapi_users.current_user()
 
