@@ -1,15 +1,24 @@
-import fastapi_users
 from src.auth.database import User
 from src.auth.manager import get_user_manager
 from src.auth.schemas import UserCreate, UserRead
-from fastapi import Depends, FastAPI
-from pydantic import BaseModel
-from pydantic import Field
-from datetime import datetime
-from enum import Enum
-from typing import List, Optional
 from src.auth.auth import auth_backend
 from src.operations.router import router as router_operation
+
+from fastapi import Depends, FastAPI
+import fastapi_users
+
+from pydantic import BaseModel
+from pydantic import Field
+
+from enum import Enum
+from typing import List, Optional
+from datetime import datetime
+
+from redis import asyncio as aioredis
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.redis import RedisBackend
+from starlette.requests import Request
+from starlette.responses import Response
 
 app=FastAPI(title='Some App')
 
@@ -41,6 +50,17 @@ def protected_route(user: User = Depends(current_user)):
 @app.get("/unprotected-route")
 def unprotected_route():
     return "Hello anonymus"
+
+#redis
+@app.on_event("startup")
+async def startup():
+    redis = aioredis.from_url("redis://localhost", encoding="utf8", decode_responses=True)
+    FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
+
+
+
+
+
 
 
 """fake_users=[
