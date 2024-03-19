@@ -4,7 +4,7 @@ from email.message import EmailMessage
 from celery import Celery
 
 
-celery=Celery('tasks',broker='redisL//localhost:6379')
+celery=Celery('tasks',broker='redis://localhost:5672')
 
 SMTP_HOST=''
 SMTP_PORT=''
