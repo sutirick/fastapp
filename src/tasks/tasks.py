@@ -1,13 +1,14 @@
+#from config import SMTP_USER, SMTP_PASSWORD
 import smtplib
 from email.message import EmailMessage
 
+
 from celery import Celery
 
-
-celery=Celery('tasks',broker='redis://localhost:5672')
-
-SMTP_HOST=''
-SMTP_PORT=''
+celery=Celery('tasks', broker='redis://localhost:6379')
+celery.conf.broker_connection_retry_on_startup = True
+SMTP_HOST='smtp.gmail.com'
+SMTP_PORT= 465
 
 def get_email_template_dashboard(username:str):
     email = EmailMessage()
