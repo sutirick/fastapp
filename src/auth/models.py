@@ -8,7 +8,7 @@ role = Table(
     metadata,
     Column('id', Integer, primary_key=True),
     Column('name',String, nullable=False),
-    Column('permissons', JSON),
+    Column('permissons', JSON, nullable=True),
 )
 
 user=Table(
