@@ -1,4 +1,4 @@
-#from config import SMTP_USER, SMTP_PASSWORD
+from src.config import SMTP_USER, SMTP_PASSWORD
 import smtplib
 from email.message import EmailMessage
 
@@ -7,6 +7,7 @@ from celery import Celery
 
 celery=Celery('tasks', broker='redis://localhost:6379')
 celery.conf.broker_connection_retry_on_startup = True
+celery.conf.result_backend = 'redis://localhost:6379'
 SMTP_HOST='smtp.gmail.com'
 SMTP_PORT= 465
 
@@ -34,3 +35,6 @@ def send_email_report_dashboard(username:str):
         server.login(SMTP_USER, SMTP_PASSWORD)
         server.send_message(email)
     
+@celery.task
+def test_task():
+    return True
