@@ -1,3 +1,4 @@
+from fastapi.staticfiles import StaticFiles
 from src.auth.database import User
 from src.auth.manager import get_user_manager
 from src.auth.schemas import UserCreate, UserRead
@@ -22,6 +23,10 @@ from starlette.requests import Request
 from starlette.responses import Response
 
 app=FastAPI(title='Some App')
+
+#подключение статического контента
+#app.mount('/static', StaticFiles(directory='src/static'),name='static')
+
 
 fastapi_users = fastapi_users.FastAPIUsers[User, int](
     get_user_manager,
