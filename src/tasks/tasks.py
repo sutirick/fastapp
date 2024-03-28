@@ -1,19 +1,19 @@
-from src.config import SMTP_USER, SMTP_PASSWORD
 import smtplib
 from email.message import EmailMessage
 
-
 from celery import Celery
 
-celery=Celery('tasks', broker='redis://localhost:6379')
-celery.conf.broker_connection_retry_on_startup = True
-celery.conf.result_backend = 'redis://localhost:6379'
-SMTP_HOST='smtp.gmail.com'
-SMTP_PORT= 465
+from src.config import SMTP_PASSWORD, SMTP_USER
 
-def get_email_template_dashboard(username:str):
+SMTP_HOST = "smtp.gmail.com"
+SMTP_PORT = 465
+
+celery = Celery('tasks', broker='redis://localhost:6379')
+
+
+def get_email_template_dashboard(username: str):
     email = EmailMessage()
-    email['Subject'] = 'Some subject of message'
+    email['Subject'] = 'Натрейдил Отчет Дашборд'
     email['From'] = SMTP_USER
     email['To'] = SMTP_USER
 
@@ -26,15 +26,12 @@ def get_email_template_dashboard(username:str):
         '</div>',
         subtype='html'
     )
+    return email
 
 
 @celery.task
-def send_email_report_dashboard(username:str):
+def send_email_report_dashboard(username: str):
     email = get_email_template_dashboard(username)
-    with smtplib.SMTP_SSL(SMTP_HOST,SMTP_PORT) as server:
+    with smtplib.SMTP_SSL(SMTP_HOST, SMTP_PORT) as server:
         server.login(SMTP_USER, SMTP_PASSWORD)
         server.send_message(email)
-    
-@celery.task
-def test_task():
-    return True

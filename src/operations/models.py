@@ -1,14 +1,14 @@
-from sqlalchemy import MetaData, Table, Column, Integer, String, TIMESTAMP, ForeignKey, JSON, Boolean
+from sqlalchemy import TIMESTAMP, Column, Integer, String, Table
 
-metadata=MetaData()
+from src.database import metadata
 
 operation = Table(
-    'operations',
+    "operation",
     metadata,
-    Column('id', Integer, primary_key=True),
-    Column('quantity',String, nullable=True),
-    Column('figi' , String, nullable=True),
-    Column('instrument_type', String, nullable=True),
-    Column('date', TIMESTAMP, nullable=True),
-    Column('type',String),
+    Column("id", Integer, primary_key=True),
+    Column("quantity", String),
+    Column("figi", String),
+    Column("instrument_type", String, nullable=True),
+    Column("date", TIMESTAMP),
+    Column("type", String),
 )

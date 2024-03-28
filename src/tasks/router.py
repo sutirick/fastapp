@@ -1,32 +1,22 @@
-from fastapi_users import FastAPIUsers
 from fastapi import APIRouter, BackgroundTasks, Depends
-from src.auth.database import User
-from src.auth.manager import get_user_manager
-from src.tasks.tasks import send_email_report_dashboard, test_task
-from src.auth.auth import auth_backend
 
-fastapi_users = FastAPIUsers[User, int](
-    get_user_manager,
-    [auth_backend],
-)
+from src.auth.base_config import current_user
 
-current_user = fastapi_users.current_user()
+from .tasks import send_email_report_dashboard
 
-router=APIRouter(prefix='/report', tags=['Tasks'])
+router = APIRouter(prefix="/report")
 
-@router.get('/dashboard')
-def get_dashboard_report(user=Depends(current_user)):
+
+@router.get("/dashboard")
+def get_dashboard_report(background_tasks: BackgroundTasks, user=Depends(current_user)):
+    # 1400 ms - Клиент ждет
+    send_email_report_dashboard(user.username)
+    # 500 ms - Задача выполняется на фоне FastAPI в event loop'е или в другом треде
+    background_tasks.add_task(send_email_report_dashboard, user.username)
+    # 600 ms - Задача выполняется воркером Celery в отдельном процессе
     send_email_report_dashboard.delay(user.username)
     return {
         "status": 200,
         "data": "Письмо отправлено",
         "details": None
-    }
-
-
-@router.get('/test')
-def testing_test_task():
-    test_task.delay()
-    return{
-        'status':'Ok'
     }
