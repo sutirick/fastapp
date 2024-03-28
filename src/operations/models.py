@@ -3,7 +3,7 @@ from sqlalchemy import MetaData, Table, Column, Integer, String, TIMESTAMP, Fore
 metadata=MetaData()
 
 operation = Table(
-    'operation',
+    'operations',
     metadata,
     Column('id', Integer, primary_key=True),
     Column('quantity',String),
