@@ -1,2 +1,0 @@
-Звпуск веб сервера:
-    uvicorn main:app --reload
